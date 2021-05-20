@@ -2,7 +2,9 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
+import { HemisphereLightHelper, PointLightHelper } from 'three'
 
+import {RectAreaLightHelper} from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
 /**
  * Base
  */
@@ -18,14 +20,71 @@ const scene = new THREE.Scene()
 /**
  * Lights
  */
+
+//ambient
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
 scene.add(ambientLight)
 
-const pointLight = new THREE.PointLight(0xffffff, 0.5)
-pointLight.position.x = 2
-pointLight.position.y = 3
-pointLight.position.z = 4
+//directional light
+const directionalLight = new THREE.DirectionalLight(0x00fffc, 0.3)
+directionalLight.position.set(1, .25, 0)
+scene.add(directionalLight)
+
+//hemisphere light
+
+const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3)
+scene.add(hemisphereLight)
+
+//point light
+
+const pointLight = new THREE.PointLight(0xff9000, 0.5 , 10, 2)
 scene.add(pointLight)
+
+//rectArea light
+
+const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1)
+rectAreaLight.position.set(-1.5, 0, 1.5)
+rectAreaLight.lookAt(new THREE.Vector3())
+scene.add(rectAreaLight)
+
+//spotlight
+const spotlight = new THREE.SpotLight(0x78ff00, 0.5, 6, Math.PI *0.1 ,0.25, 1 )
+spotlight.position.set(0, 2, 3)
+scene.add(spotlight)
+
+spotlight.target.position.x = -0.75
+scene.add(spotlight.target)
+
+
+//light helpers
+const hemisphereLightHelper = new THREE.HemisphereLightHelper(hemisphereLight, 0.2)
+scene.add(hemisphereLightHelper)
+
+const pontLightHelper = new THREE.PointLightHelper(pointLight, 0.2)
+scene.add(pontLightHelper)
+
+const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 0.2)
+scene.add(directionalLightHelper)
+
+const spotlightHelper = new THREE.SpotLightHelper(spotlight)
+scene.add(spotlightHelper)
+
+window.requestAnimationFrame(()=>{
+    spotlightHelper.update()
+})
+
+
+const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight)
+scene.add(rectAreaLightHelper)
+
+window.requestAnimationFrame(()=>{
+    rectAreaLightHelper.position.copy(rectAreaLight.position)
+    rectAreaLightHelper.quaternion.copy(rectAreaLight.quaternion)
+    rectAreaLightHelper.update()
+})
+
+
+
 
 /**
  * Objects
